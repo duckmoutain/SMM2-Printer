@@ -40,7 +40,7 @@ def main(argv):
             saveBilevel = True
         elif opt == '-d':
             ditherMode = True
-        elif opt == '-d':
+        elif opt == '-m':
             monochromeMode = True
     if monochromeMode:
         paletteMap = {
@@ -89,8 +89,8 @@ def main(argv):
         newimage.show()
         #im.show()
     if saveBilevel:
-        im.save("bilevel_" + args[0])
-        print("Bilevel version of " + args[0] + " saved as bilevel_" + args[0])
+        newimage.save("output_" + args[0])
+        print("Bilevel version of " + args[0] + " saved as output_" + args[0])
     if not (previewBilevel or saveBilevel):
         im_px = newimage.convert('RGB').load()
         data = [0]

@@ -26,7 +26,7 @@ these buttons for our use.
 
 #include "Joystick.h"
 
-extern const uint8_t image_data[0x12c1] PROGMEM;
+extern const uint8_t image_data[] PROGMEM;
 
 // Main entry point.
 int main(void)
@@ -152,7 +152,9 @@ typedef enum {
 	ZIG_ZAG,
 	MOVE,
 	STOP,
-	DONE
+	DONE,
+	LEFT_COLOR,
+	RIGHT_COLOR
 } State_t;
 State_t state = SYNC_CONTROLLER;
 
@@ -187,11 +189,21 @@ int command_count = 0;
 int report_count = 0;
 int xpos = 0;
 int ypos = 0;
+int colorNow = 1;
+int colorTarget = 1;
 int portsval = 0;
 
 #define max(a, b) (a > b ? a : b)
 #define ms_2_count(ms) (ms / ECHOES / (max(POLLING_MS, 8) / 8 * 8))
-#define is_black(x, y) (pgm_read_byte(&(image_data[((x) / 8) + ((y) * 40)])) & 1 << ((x) % 8))
+
+uint8_t getColor(int x, int y){
+    int offset = ((x*5) % 8);
+    if (offset >3){
+        return ((uint8_t)(pgm_read_byte(&(image_data[((x*5) / 8) + ((y) * 200)])) <<  offset) >> 3) + (pgm_read_byte(&(image_data[((x*5) / 8) + ((y) * 200) + 1])) >> ( 11 - (x*5) % 8 ));  
+    }else{
+        return ((uint8_t)(pgm_read_byte(&(image_data[((x*5) / 8) + ((y) * 200)])) <<  offset) >> 3);
+    }  
+}
 
 void complete_zig_zag_pattern(USB_JoystickReport_Input_t *const ReportData)
 {
@@ -298,11 +310,8 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 			command_count = 0;
 			xpos = 0;
 			ypos = 0;
-#if defined(ZIG_ZAG_PRINTING)
-			state = ZIG_ZAG;
-#else
+			colorTarget = getColor(xpos,ypos);
 			state = STOP;
-#endif
 		}
 		else
 		{
@@ -312,6 +321,7 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 			// Clear the screen
 			if (command_count == ms_2_count(1500) || command_count == ms_2_count(3000))
 				ReportData->Button |= SWITCH_MINUS;
+				ReportData->Button |= SWITCH_R;
 			command_count++;
 		}
 		break;
@@ -330,9 +340,35 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 		state = STOP;
 		break;
 	case STOP:
-		state = MOVE;
-		if (ypos > 119)
+		if (ypos > 159){
 			state = DONE;
+		}else if ((colorTarget == colorNow) || (colorTarget == 0)){
+			state = MOVE;
+		}else{
+			int offset = colorNow - colorTarget;
+			if((offset <= 8 && offset >=1) || (offset <= -9 && offset >=-16)){
+				state = RIGHT_COLOR;
+			}else{
+				state = LEFT_COLOR;
+			}
+		}
+		
+		break;
+	case LEFT_COLOR:
+		ReportData->Button |= SWITCH_ZL;
+		colorNow++;
+		if(colorNow > 16){
+			colorNow = 0;
+		}
+		state = STOP;
+		break;
+	case RIGHT_COLOR:
+		ReportData->Button |= SWITCH_ZR;
+		colorNow--;
+		if(colorNow < 0){
+			colorNow = 16;
+		}
+		state = STOP;
 		break;
 	case DONE:
 #ifdef ALERT_WHEN_DONE
@@ -346,6 +382,7 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 
 	if (state != SYNC_CONTROLLER && state != SYNC_POSITION && state != DONE)
 	{
+		bool requestColor = true;
 		// Position update (diagonal moves doesn't work since they ink two dots... is not necessary to test them)
 		if (ReportData->HAT == HAT_RIGHT)
 			xpos++;
@@ -355,9 +392,13 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 			ypos--;
 		else if (ReportData->HAT == HAT_BOTTOM)
 			ypos++;
-
+		else
+			requestColor = false;
+		if(requestColor){
+			colorTarget = getColor(xpos,ypos);
+		}
 		// Inking (the printing patterns above will not move outside the canvas... is not necessary to test them)
-		if (is_black(xpos, ypos))
+		if (colorTarget != 0)
 			ReportData->Button |= SWITCH_A;
 	}
 

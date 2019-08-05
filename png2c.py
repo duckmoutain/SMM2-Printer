@@ -40,27 +40,34 @@ def main(argv):
             saveBilevel = True
         elif opt == '-d':
             ditherMode = True
-        
-  
-    paletteMap = {
-        (0, 0, 0):1,
-        (255, 255, 255):0,
-        (188, 188,188):2,
-        (188, 0, 138):3,
-        (255, 194, 254):4,
-        (136, 0, 188):5,
-        (188, 98, 255):6,
-        (0, 0, 254):7,
-        (0, 255, 255):8,
-        (0, 188, 0):9,
-        (0, 255, 1):10,
-        (254, 194, 0):11,
-        (255, 255, 0):12,
-        (173, 128, 71):13,
-        (255, 245, 209):14,
-        (188, 0, 0):15,
-        (254, 0, 0):16,
-    }
+        elif opt == '-d':
+            monochromeMode = True
+    if monochromeMode:
+        paletteMap = {
+            (0, 0, 0):1,
+            (255, 255, 255):0,
+            (188, 188,188):2,
+        }
+    else:
+        paletteMap = {
+            (0, 0, 0):1,
+            (255, 255, 255):0,
+            (188, 188,188):2,
+            (188, 0, 138):3,
+            (255, 194, 254):4,
+            (136, 0, 188):5,
+            (188, 98, 255):6,
+            (0, 0, 254):7,
+            (0, 255, 255):8,
+            (0, 188, 0):9,
+            (0, 255, 1):10,
+            (254, 194, 0):11,
+            (255, 255, 0):12,
+            (173, 128, 71):13,
+            (255, 245, 209):14,
+            (188, 0, 0):15,
+            (254, 0, 0):16,
+        }
 
     palettedata = []
 
@@ -139,6 +146,7 @@ def main(argv):
 def usage():
     print("To convert to image.c: png2c.py <yourImage.png>")
     print("To convert to a image.c in dithering mode: png2c.py -d <yourImage.png>")
+    print("To convert to a image.c in monochrome: png2c.py -d -m <yourImage.png>")
     print("To preview image: png2c.py -p <yourImage.png>")
     print("To save image: png2c.py -s <yourImage.png>")
 

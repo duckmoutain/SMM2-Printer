@@ -24,10 +24,11 @@ def quantizetopalette(silf, palette, dither=False):
     except AttributeError:
         return silf._makeself(im)
 def main(argv):
-    opts, args = getopt.getopt(argv, "pshd")
+    opts, args = getopt.getopt(argv, "pshdm")
     previewBilevel = False
     saveBilevel = False
     ditherMode = False
+    monochromeMode = False
 
     for opt, arg in opts:
         if opt == '-h':
@@ -39,6 +40,7 @@ def main(argv):
             saveBilevel = True
         elif opt == '-d':
             ditherMode = True
+        
   
     paletteMap = {
         (0, 0, 0):1,
@@ -67,10 +69,10 @@ def main(argv):
             palettedata += [k[i]]
     palettedata += [0]*3*(256-18)
 
-    im = Image.open(args[0])                # import 320x160 png
+    im = Image.open(args[0])                # import 320x180 png
     im = im.convert("RGB")
-    if not (im.size[0] == 320 and im.size[1] == 160):
-        print("ERROR: Image must be 320px by 160px!")
+    if not (im.size[0] == 320 and im.size[1] == 180):
+        print("ERROR: Image must be 320px by 180px!")
         sys.exit()
 
     palimage = Image.new('P', (16, 16))

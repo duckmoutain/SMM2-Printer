@@ -297,10 +297,12 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 		}
 		else
 		{
+			#if defined(SYNC_CONTROLLER)
 			if (command_count == ms_2_count(500) || command_count == ms_2_count(1000))
 				ReportData->Button |= SWITCH_L | SWITCH_R;
 			else if (command_count == ms_2_count(1500) || command_count == ms_2_count(2000))
 				ReportData->Button |= SWITCH_A;
+			#endif
 			command_count++;
 		}
 		break;
@@ -321,7 +323,6 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 			// Clear the screen
 			if (command_count == ms_2_count(1500) || command_count == ms_2_count(3000))
 				ReportData->Button |= SWITCH_MINUS;
-				ReportData->Button |= SWITCH_R;
 			command_count++;
 		}
 		break;
@@ -340,7 +341,7 @@ void GetNextReport(USB_JoystickReport_Input_t *const ReportData)
 		state = STOP;
 		break;
 	case STOP:
-		if (ypos > 159){
+		if (ypos > 179){
 			state = DONE;
 		}else if ((colorTarget == colorNow) || (colorTarget == 0)){
 			state = MOVE;

@@ -24,10 +24,10 @@ def quantizetopalette(silf, palette, dither=False):
     except AttributeError:
         return silf._makeself(im)
 def main(argv):
-    opts, args = getopt.getopt(argv, "pshdm")
+    opts, args = getopt.getopt(argv, "psham")
     previewBilevel = False
     saveBilevel = False
-    ditherMode = False
+    ditherMode = True
     monochromeMode = False
 
     for opt, arg in opts:
@@ -38,8 +38,8 @@ def main(argv):
             previewBilevel = True
         elif opt == '-s':
             saveBilevel = True
-        elif opt == '-d':
-            ditherMode = True
+        elif opt == '-a':
+            ditherMode = False
         elif opt == '-m':
             monochromeMode = True
     if monochromeMode:
@@ -145,7 +145,7 @@ def main(argv):
 
 def usage():
     print("To convert to image.c: png2c.py <yourImage.png>")
-    print("To convert to a image.c in dithering mode: png2c.py -d <yourImage.png>")
+    print("To convert to a image.c in average mode: png2c.py -a <yourImage.png>")
     print("To convert to a image.c in monochrome: png2c.py -d -m <yourImage.png>")
     print("To preview image: png2c.py -p <yourImage.png>")
     print("To save image: png2c.py -s <yourImage.png>")

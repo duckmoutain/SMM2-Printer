@@ -1,4 +1,6 @@
 ## SMM2-Printer
+[中文说明](https://github.com/HFO4/SMM2-Printer/wiki/Readme-%E4%B8%AD%E6%96%87)
+
 Using LUFA to emulate Nintendo Switch's controller input, automatic draw images in comment of Super Mario Maker 2.
 
 ### Printing Comments

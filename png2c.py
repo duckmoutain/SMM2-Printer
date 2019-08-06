@@ -117,7 +117,7 @@ def main(argv):
         byteIndex = 0
         offset = 0
 
-        for i in range(0,160):
+        for i in range(0,180):
             for j in range(0,320):
                 if offset <= 3:
                     c = paletteMap[im_px[j,i]]

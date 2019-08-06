@@ -50,53 +50,29 @@ The image printed depends on `image.c` which is generated with `png2c.py` which 
 
 `png2c.py` support different processing method, examples are shown bellow:
 
-| Method | Result | Arguments |
-| ------ | ------ | --------- |
-|        |        |           |
-|        |        |           |
-|        |        |           |
+| Method     | Result                                                       | Arguments      | Description                                                  |
+| ---------- | ------------------------------------------------------------ | -------------- | ------------------------------------------------------------ |
+| Origin     | ![origin](https://github.com/HFO4/SMM2-Printer/raw/master/examples/example.png) | None           | Original image                                               |
+| Dither     | ![dither](https://github.com/HFO4/SMM2-Printer/raw/master/examples/colored_example.png) | None (Default) | The best way to restore origin image, drawing takes a long time. (Usually hours) |
+| Average    | ![average](https://github.com/HFO4/SMM2-Printer/raw/master/examples/average_example.png) | `-a`           | The restore effect is poor and the drawing time is shorter. Suitable for vector pictures / anime. |
+| Monochrome | ![mono](https://github.com/HFO4/SMM2-Printer/raw/master/examples/mono_example.png) | `-m`           | The fasted way to draw, only three color was used.           |
 
 In order to run `png2c.py`, you need to [install Python](https://www.python.org/downloads/) (I use Python 2.7). Also, you need to have the [Python Imaging Library](https://pillow.readthedocs.io/en/3.0.0/installation.html) installed ([install pip](https://pip.pypa.io/en/stable/installing/#do-i-need-to-install-pip) if you need to).
-Using the supplied sample image, splatoonpattern.png:
+Using the supplied sample image, example.png:
 
 ```
-$ python png2c.py splatoonpattern.png
+$ python png2c.py example.png
 ```
 Substitute your own .png image to generate the `image.c` file necessary to print. Just make sure your image is in the `Switch-Fightstick` directory.
 
-To generate an inverted colormap of the image:
+To generate an monochrome of the image:
 
 ```
-$ python png2c.py -i splatoonpattern.png
+$ python png2c.py -m example.png
 ```
 
-#### What the dither?
-As previously mentioned, png2c.py will dither the input image if you supply an image that is not already made up of only black and white pixels. Say you want to print this bomb image you created...
-
-![http://imgur.com/r2GoVdD.png](http://imgur.com/r2GoVdD.png)
-
-*image via [vjapolitzer](https://github.com/vjapolitzer)*
-
-...but you want to know what it will look like before committing to printing it in Splatoon. Fret not! You can also preview or save a copy of the bilevel version of your image.
-
-To preview the bilevel image:
+To preview output, simply add `-p` argument:
 
 ```
-$ python png2c.py -p yourImage.png
+$ python png2c.py -p example.png
 ```
-
-To save the bilevel image:
-
-```
-$ python png2c.py -s yourImage.png
-```
-
-![http://imgur.com/uUOeJ7P.png](http://imgur.com/uUOeJ7P.png)
-
-*image via [vjapolitzer](https://github.com/vjapolitzer)*
-
-Looks good! Time to get printing.
-
-### Sample
-![http://i.imgur.com/93B1Usb.jpg](http://i.imgur.com/93B1Usb.jpg)
-*image via [/u/Stofers](https://www.reddit.com/user/Stofers)*
